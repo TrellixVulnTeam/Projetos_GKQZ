@@ -1,5 +1,5 @@
 aside.logo {
-    background-color: var(--bd-dark);
+    background-color: var(--bg-dark);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,6 +10,8 @@ aside.logo img {
     width: 100%;
 }
 
-aside.logo:hover{
-    background: #1a3f3a;
+@media(max-width: 576px) {
+    aside.logo img {
+        width: 350px;
+    }
 }
