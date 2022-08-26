@@ -88,5 +88,19 @@ module.exports = app => {
         app.db("categories").where({ id: req.params.id }).then(categories => res.json(withPath(categories))).catch(err => res.status(500).send(err))
     }
 
-    return { get, save, remove, withPath, getById }
+    const toTree = (categories, tree) => {
+        if (!tree) tree = categories.filter(c => !c.parentId)
+        tree = tree.map(parentNode => {
+            const isChild = node => node.parentId == parentNode.id
+            parentNode.children = toTree(categories, categories.filter(isChild))
+            return parentNode
+        })
+        return tree
+    }
+
+    const getTree = (req, res) => {
+        app.db("categories").then(categories => res.json(toTree(withPath(categories)))).catch(err => res.status(500).send(err))
+    }
+
+    return { get, save, remove, withPath, getById, getTree }
 }
