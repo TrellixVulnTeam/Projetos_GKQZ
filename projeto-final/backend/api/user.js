@@ -21,7 +21,7 @@ module.exports = app => {
             existsOrError(user.email, "E-mail não cadastrado.")
             existsOrError(user.password, "Senha não cadastrada.")
             existsOrError(user.confirmPassword, "Confirmação de senha inválida.")
-            existsOrError(user.password, user.confirmPassword, "Senhas não conferem.")
+            equalsOrError(user.password, user.confirmPassword, "Senhas não conferem.")
 
             const userFromDB = await app.db("users").where({ email: user.email }).first()
             if (!user.id) {
