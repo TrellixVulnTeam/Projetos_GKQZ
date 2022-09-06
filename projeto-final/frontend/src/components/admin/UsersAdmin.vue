@@ -11,6 +11,7 @@
               v-model="user.name"
               required
               placeholder="Informe o nome do usuário"
+              :readonly="mode === 'remove'"
             ></b-form-input>
           </b-form-group>
         </b-col>
@@ -22,11 +23,12 @@
               v-model="user.email"
               required
               placeholder="Informe o e-mail do usuário"
+              :readonly="mode === 'remove'"
             ></b-form-input>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-row>
+      <b-row v-show="mode === 'save'">
         <b-col md="6" sm="12">
           <b-form-group label="Senha: " label-for="user-password">
             <b-form-input
@@ -53,26 +55,42 @@
           </b-form-group>
         </b-col>
       </b-row>
-      <b-form-checkbox id="user-admin" v-model="user.admin" class="mb-3 ml-1"
+      <b-form-checkbox id="user-admin" v-model="user.admin" class="mb-3 ml-1" v-show="mode === 'save'"
         >Administrador</b-form-checkbox
       >
-      <b-button
-        variant="primary"
-        v-if="mode === 'save'"
-        @click="save()"
-        class="mb-1"
-        >Salvar</b-button
-      >
-      <b-button
-        variant="danger"
-        v-if="mode === 'remove'"
-        @click="remove()"
-        class="mb-1"
-        >Excluir</b-button
-      >
-      <b-button @click="reset()" class="ml-1 mb-1">Cancelar</b-button>
+      <b-row>
+        <b-col xs="12">
+          <b-button
+            variant="primary"
+            v-if="mode === 'save'"
+            @click="save()"
+            class="mb-1"
+            >Salvar</b-button
+          >
+          <b-button
+            variant="danger"
+            v-if="mode === 'remove'"
+            @click="remove"
+            class="mb-1"
+            >Excluir</b-button
+          >
+          <b-button @click="reset()" class="ml-1 mb-1">Cancelar</b-button>
+        </b-col>
+      </b-row>
     </b-form>
     <b-table hover striped :items="users" :fields="fields" class="mt-5">
+      <template slot="actions" slot-scope="data">
+        <b-button variant="warning" @click="loadUser(data.item)" class="mr-2">
+          <i class="fa fa-pencil"></i>
+        </b-button>
+        <b-button
+          variant="danger"
+          @click="loadUser(data.item, 'remove')"
+          class="mr-2"
+        >
+          <i class="fa fa-trash"></i>
+        </b-button>
+      </template>
     </b-table>
   </div>
 </template>
@@ -112,7 +130,7 @@ export default {
         },
         {
           key: "actions",
-          labe: "Ações",
+          label: "Ações",
         },
       ],
     };
@@ -138,7 +156,7 @@ export default {
         .catch(showError);
     },
     remove() {
-      const id = this.users.id;
+      const id = this.user.id;
       axios
         .delete(`${baseApiUrl}/users/${id}`)
         .then(() => {
@@ -146,6 +164,10 @@ export default {
           this.loadUsers();
         })
         .catch(showError);
+    },
+    loadUser(user, mode = "save") {
+      this.mode = mode;
+      this.user = { ...user };
     },
   },
   mounted() {
