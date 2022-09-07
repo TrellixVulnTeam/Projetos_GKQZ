@@ -1,9 +1,9 @@
 <template>
-  <div id="app" :class="{'hide-menu': !isMenuVisible}">
-    <Header title="Projeto Base de Conhecimento" :hideToggle="false" :hideUserDropDown="false">{{
+  <div id="app" :class="{'hide-menu': !isMenuVisible || !user}">
+    <Header title="Projeto Base de Conhecimento" :hideToggle="!user" :hideUserDropDown="!user">{{
       title
     }}</Header>
-    <Menu></Menu>
+    <Menu v-if="user"></Menu>
     <Content></Content>
     <Footer></Footer>
   </div>

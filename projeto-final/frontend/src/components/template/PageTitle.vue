@@ -2,6 +2,7 @@
   <div class="page-title">
     <h1><i v-if="icon" :class="icon"></i>{{ mainTitle }}</h1>
     <h2>{{ subTitle }}</h2>
+    <hr>
   </div>
 </template>
 
